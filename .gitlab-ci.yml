@@ -1,12 +1,35 @@
 image: python:3.10
 
+variables:
+  GIT_DEPTH: 0
+
 stages:
   - test
+  - deploy
+
+before_script:
+  - pip install hatch hatch-vcs
 
 test:
   stage: test
-  before_script:
-    - pip install hatch
   script:
     - hatch test --cover
   coverage: '/^TOTAL.*\s+(\d+(?:\.\d+)?%)$/'
+
+deploy_stable:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - hatch build
+    - echo "${CI_PROJECT_NAME} deployment on stable servers"
+    - ls -l dist/
+
+deploy_develop:
+  stage: deploy
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+  script:
+    - hatch build
+    - echo "${CI_PROJECT_NAME} deployment on develop servers"
+    - ls -l dist/
