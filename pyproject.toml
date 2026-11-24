@@ -31,6 +31,12 @@ Documentation = "https://github.com/U.N. Owen/my-arithmetic-julien#readme"
 Issues = "https://github.com/U.N. Owen/my-arithmetic-julien/issues"
 Source = "https://github.com/U.N. Owen/my-arithmetic-julien"
 
+[project.optional-dependencies]
+docs = [
+  "sphinx",
+  "sphinx-rtd-theme",
+]
+
 [tool.hatch.version]
 source = "vcs"
 
@@ -44,6 +50,12 @@ extra-dependencies = [
 ]
 [tool.hatch.envs.types.scripts]
 check = "mypy --install-types --non-interactive {args:src/my_arithmetic_julien tests}"
+
+[tool.hatch.envs.docs]
+features = ["docs"]
+
+[tool.hatch.envs.docs.scripts]
+build = "sphinx-build -b html docs/source docs/build/html"
 
 [tool.coverage.run]
 source_pkgs = ["my_arithmetic_julien", "tests"]
